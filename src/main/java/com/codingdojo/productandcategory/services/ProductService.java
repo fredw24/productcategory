@@ -1,6 +1,7 @@
 package com.codingdojo.productandcategory.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -34,20 +35,41 @@ public class ProductService {
     	return productRepository.save(p);
     }
     
-//    public Product linkCategory(Product p) {
-//    	
-//    	// retrieve an instance of a category using another method in the service.
-//        Category thisCategory = categoryRepository.findById(p.getId()).get();
-//        
-//        // retrieve an instance of a product using another method in the service.
-//        Product thisProduct = productRepository.findById(p.getId()).get();
-//        
-//        // add the product to this category's list of products
-//        thisCategory.getProducts().add(thisProduct);
-//        
-//        // Save thisCategory, since you made changes to its product list.
-//        return productRepository.save(thisCategory);
-//    }
+    public List<Product> findNotContainProducts(Category category){
+		 
+		 List<Product> findNot = productRepository.findByCategoriesNotContains(category);
+		 return findNot;
+		 
+	 }
+	 
+	 public List<Product> findContainProducts(Category category){
+		 
+		 List<Product> findCategories = productRepository.findAllByCategories(category);
+		 return findCategories;
+		 
+	 }
+	 
+	 public Product findProduct(Long id) {
+		 
+		 Product one = productRepository.findById(id).get();
+		 return one;
+	 }
+    
+    
+    public void linkCategory(Long productId, Long categoryId) {
+		// retrieve an instance of a category using another method in the service.
+		    Optional<Category> thisCategory = categoryRepository.findById(categoryId);
+		    
+		    // retrieve an instance of a product using another method in the service.
+		    Optional<Product> thisProduct = productRepository.findById(productId);
+		    
+		 // This has the same affect as above:
+		    thisProduct.get().getCategories().add(thisCategory.get());	
+		    // add the category to this products's list of categories
+		    productRepository.save(thisProduct.get());	
+		    // Save thisProduct, since you made changes to its category list.
+		 
+	 }
 	 
 	 
 
